@@ -14,7 +14,7 @@
  margin: auto;
  --main-upperBlock1-height: 150px;
  --main-upperBlock2-height: 280px;
- --drop: 20px;
+ --drop: 250px;
 }
 
 h2 {
@@ -28,14 +28,7 @@ h2 {
  background-color: orange;
 }
 
-.block1 {
- animation: move 4s linear infinite;
 
-}
-
-.block2 {
- animation: move 4s linear 2s infinite;
-}
 
 .up1 {
  height: var(--main-upperBlock1-height);
@@ -69,8 +62,7 @@ h2 {
 .bird {
  width: 50px;
  height: 50px;
- left: 200px;
- top: 200px;
+ left: 225px;
  border-radius: 50%;
  background-color: aquamarine;
  position: absolute;

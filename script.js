@@ -3,21 +3,33 @@ const gameStyle = window.getComputedStyle(game);
 const heightValues = [150, 300];
 let val = 250;
 let birdDirection = 1;
+let gameStarted = false;
+
+let blockIntervalId = null;
+
+function startGame() {}
 
 const moveBird = setInterval(() => {
+  if (!gameStarted) {
+    return;
+  }
   val = val + birdDirection * 0.5;
   if (val > 450 || val < 0) {
-    clearInterval(moveBird);
-    clearInterval(moveBlocks1);
     alert("game over");
+    gameStarted = false;
     val = 250;
   }
   let bird = document.getElementById("bird").getBoundingClientRect();
   document.querySelectorAll(".block").forEach((ele) => {
-    if (birdColide(ele.getBoundingClientRect(), bird)) {
+    if (birdCollide(ele.getBoundingClientRect(), bird)) {
       alert("game");
-      clearInterval(moveBird);
-      clearInterval(moveBlocks1);
+      document.querySelectorAll(".block").forEach((ele) => {
+        ele.style.animation = "none";
+      });
+      val = 250;
+      clearInterval(blockIntervalId);
+      blockIntervalId = null;
+      gameStarted = false;
     }
   });
   game.style.setProperty("--drop", `${val}px`);
@@ -27,31 +39,42 @@ window.addEventListener("keydown", (e) => {
   if (e.key !== " ") {
     return;
   }
+  if (!gameStarted) {
+    gameStarted = true;
+    document.querySelectorAll(".block1").forEach((ele) => {
+      ele.style.animation = "move 4s linear infinite";
+    });
+    document.querySelectorAll(".block2").forEach((ele) => {
+      ele.style.animation = "move 4s linear 2s infinite";
+    });
+    blockIntervalId = setInterval(() => {
+      heightValues.push(Math.floor(Math.random() * 200) + 100);
+      game.style.setProperty(
+        "--main-upperBlock1-height",
+        `${heightValues.pop()}px`
+      );
+      setTimeout(() => {
+        heightValues.push(Math.floor(Math.random() * 200) + 100);
+        game.style.setProperty(
+          "--main-upperBlock2-height",
+          `${heightValues.pop()}px`
+        );
+      }, 2000);
+    }, 4000);
+    return;
+  }
   birdDirection = -2;
   setTimeout(() => {
     birdDirection = 1;
   }, 100);
 });
 
-function birdColide(d1, d2) {
-  let ox = d1.left - d2.left > -20 && d1.left - d2.left < 50;
+function birdCollide(block, bird) {
+  let ox = block.left - bird.left > -20 && block.left - bird.left < 50;
   let oy =
-    d1.top > d2.top ? d2.top + d2.height > d1.top : d1.top + d1.height > d2.top;
+    block.top > bird.top
+      ? bird.top + bird.height > block.top
+      : block.top + block.height > bird.top;
 
   return ox && oy;
 }
-
-const moveBlocks1 = setInterval(() => {
-  heightValues.push(Math.floor(Math.random() * 200) + 100);
-  game.style.setProperty(
-    "--main-upperBlock1-height",
-    `${heightValues.pop()}px`
-  );
-  setTimeout(() => {
-    heightValues.push(Math.floor(Math.random() * 200) + 100);
-    game.style.setProperty(
-      "--main-upperBlock2-height",
-      `${heightValues.pop()}px`
-    );
-  }, 2000);
-}, 4000);
