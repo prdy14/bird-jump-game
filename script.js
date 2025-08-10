@@ -16,6 +16,10 @@ const moveBird = setInterval(() => {
   val = val + birdDirection * 0.5;
   if (val > 450 || val < 0) {
     alert("game over");
+    document.querySelectorAll(".block").forEach((ele) => {
+      ele.style.animation = "none";
+    });
+    clearInterval(blockIntervalId);
     gameStarted = false;
     val = 250;
   }
